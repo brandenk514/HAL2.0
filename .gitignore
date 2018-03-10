@@ -104,4 +104,4 @@ ENV/
 resources/*
 
 # ignore jetbrains files
-.idea/*s
+.idea/*
