@@ -67,8 +67,3 @@ class Witai:
         except Exception:
             self.client.logger.setLevel(logging.WARNING)
             print("Something went wrong with the speech request")
-
-
-if __name__ == '__main__':
-    w = Witai()
-    w.create_speech_request()
