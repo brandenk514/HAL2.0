@@ -3,21 +3,12 @@ import wave
 import pyaudio
 import os
 from array import array
+import logging
 
 
 class Witai:
     def __init__(self):
-        client = Wit(access_token=os.environ.get('wit_token'))
-
-        resp = client.message('what is the weather in London?')
-        print('Yay, got Wit.ai response: ' + str(resp))
-
-        self.create_audio_file()
-
-        res = None
-        with open('resources/audio.wav', 'rb') as f:
-            res = client.speech(f, None, {'Content-Type': 'audio/wav'})
-        print('Yay, got Wit.ai response: ' + str(res))
+        self.client = Wit(access_token=os.environ.get('wit_token'))
 
     def create_audio_file(self):
 
@@ -28,7 +19,7 @@ class Witai:
         recording_seconds = 5
         file_name = "resources/audio.wav"
 
-        audio = pyaudio.PyAudio()  # instantiate the pyaudio
+        audio = pyaudio.PyAudio()  # instantiate the pyAudio
 
         # recording prerequisites
         stream = audio.open(format=audio_format, channels=channels,
@@ -59,6 +50,25 @@ class Witai:
         wave_file.writeframes(b''.join(frames))  # append frames recorded to file
         wave_file.close()
 
+    def create_message_request(self, text):
+        try:
+            resp = self.client.message(text)
+            print('Yay, got Wit.ai response: ' + str(resp))
+        except Exception:
+            self.client.logger.setLevel(logging.WARNING)
+            print('Something went wrong with the message request')
+
+    def create_speech_request(self):
+        self.create_audio_file()
+        try:
+            with open('resources/audio.wav', 'rb') as f:
+                res = self.client.speech(f, None, {'Content-Type': 'audio/wav'})
+                print('Yay, got Wit.ai response: ' + str(res))
+        except Exception:
+            self.client.logger.setLevel(logging.WARNING)
+            print("Something went wrong with the speech request")
+
 
 if __name__ == '__main__':
     w = Witai()
+    w.create_speech_request()
