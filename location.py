@@ -2,12 +2,13 @@ import googlemaps
 import os
 import requests
 import json
-
+import api_parsing
 
 
 class Location:
     def __init__(self):
         self.client = googlemaps.Client(key=os.environ.get('google_api_key'))
+        self.parsing = api_parsing.ApiParsing()
 
     def create_location_request(self, location):
         """
@@ -92,9 +93,32 @@ class Location:
         except googlemaps.exceptions.TransportError:
             return "distance_matrix Transport Error"
 
+    def get_distance_between_to_locations(self, distance_request):
+        """
+        :param distance_request: A string
+        :return:  A string consisting of distance and travel time between two locations in a given radius
+        """
+        locations = self.f.split_locations(self.f.split_sentence(distance_request))
+        distance_matrix = self.create_distance_matrix_request(locations[0], locations[1])
+        destination = distance_matrix['destination_addresses'][0]
+        ori = distance_matrix['origin_addresses'][0]
+        rows = distance_matrix['rows'][0]
+        distance = ""
+        time = ""
+        for e in rows['elements']:
+            if e['status'] == "ZERO_RESULTS":
+                return "The distance between {0} and {1} is too far to calculate".format(ori, destination)
+            distance = e['distance']['text']
+            time = e['duration']['text']
+        return "The distance between {0} and {1} is approximately {2} and it will take about {3} in travel time by car" \
+            .format(ori, destination, distance, time)
+
 
 if __name__ == '__main__':
     loc = Location()
     locale = loc.create_location_request("London, England")
-    req = loc.create_timezone_request(locale)
-    print(req)
+    print(locale)
+    request = loc.parsing.parse_for_lat_lng(locale)
+    req = loc.create_elevation_request(request)
+    response = loc.parsing.parse_elevation(req)
+    print(response)
