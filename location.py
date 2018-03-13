@@ -49,8 +49,9 @@ class Location:
         :param location As a list
         :return: a timezone JSON request
         """
+        coordinates = self.parsing.parse_for_lat_lng(location)
         try:
-            return self.client.timezone(location)
+            return self.client.timezone(coordinates)
         except googlemaps.exceptions.ApiError:
             return "timezone API Error"
         except googlemaps.exceptions.HTTPError:
@@ -65,8 +66,9 @@ class Location:
         :param location as a list
         :return: a elevation JSON request
         """
+        coordinates = self.parsing.parse_for_lat_lng(location)
         try:
-            return self.client.elevation(location)
+            return self.client.elevation(coordinates)
         except googlemaps.exceptions.ApiError:
             return "elevation API Error"
         except googlemaps.exceptions.HTTPError:
@@ -110,7 +112,7 @@ class Location:
                 return "The distance between {0} and {1} is too far to calculate".format(ori, destination)
             distance = e['distance']['text']
             time = e['duration']['text']
-        return "The distance between {0} and {1} is approximately {2} and it will take about {3} in travel time by car" \
+        return "The distance between {0} and {1} is approximately {2} and it will take about {3} in travel time by car"\
             .format(ori, destination, distance, time)
 
 
@@ -118,7 +120,6 @@ if __name__ == '__main__':
     loc = Location()
     locale = loc.create_location_request("London, England")
     print(locale)
-    request = loc.parsing.parse_for_lat_lng(locale)
-    req = loc.create_elevation_request(request)
+    req = loc.create_elevation_request(locale)
     response = loc.parsing.parse_elevation(req)
     print(response)
