@@ -105,3 +105,6 @@ resources/*
 
 # ignore jetbrains files
 .idea/*
+
+#ignore SpiBox
+spibox/*
