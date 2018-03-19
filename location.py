@@ -114,12 +114,3 @@ class Location:
             time = e['duration']['text']
         return "The distance between {0} and {1} is approximately {2} and it will take about {3} in travel time by car"\
             .format(ori, destination, distance, time)
-
-
-if __name__ == '__main__':
-    loc = Location()
-    locale = loc.create_location_request("London, England")
-    print(locale)
-    req = loc.create_elevation_request(locale)
-    response = loc.parsing.parse_elevation(req)
-    print(response)
