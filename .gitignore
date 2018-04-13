@@ -106,5 +106,8 @@ resources/*
 # ignore jetbrains files
 .idea/*
 
-#ignore SpiBox
+# ignore SpiBox
 spibox/*
+
+# ignore Smart from hacker house
+Smart-Security-Camera/*
