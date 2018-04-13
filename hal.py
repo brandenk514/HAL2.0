@@ -1,4 +1,4 @@
-import motion_sensor
+# import motion_sensor
 import weather
 import location
 
@@ -17,4 +17,5 @@ if __name__ == '__main__':
     coordinates = hal.location_request.parsing.parse_for_lat_lng(locale)
     print(coordinates)
     weather = hal.weather_request.get_current_weather(coordinates)
-    print(weather.temperature)
+    print(hal.weather_request.weather_obj.currently)
+    print(hal.weather_request.get_current_precipProbability())
