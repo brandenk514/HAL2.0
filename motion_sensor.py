@@ -29,3 +29,6 @@ class MotionSensor:
             print("Bye for now")
             # Reset GPIO
             GPIO.cleanup()
+        except SystemExit:
+            print("Bye for now")
+            GPIO.cleanup()

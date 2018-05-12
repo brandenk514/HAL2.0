@@ -1,6 +1,9 @@
 from picamera import PiCamera
 from time import sleep
 import datetime
+import os
+import time
+from sys import argv
 
 
 class SecurityCamera:
@@ -13,6 +16,7 @@ class SecurityCamera:
 
     def start_recording(self):
         file_name = self.get_file_name()
-        self.camera.start_recording('/home/pi/security_recordings/' + file_name + '.h264')
+        self.camera.rotation = 180
+        self.camera.start_recording('/home/branden/camera/security_recordings/' + file_name + '.h264')
         sleep(self.time)
         self.camera.stop_recording()
