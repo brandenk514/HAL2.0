@@ -1,10 +1,9 @@
 import wx
-import os
 
 
-class ExamplePanel(wx.Panel):
+class GUIPanel(wx.Panel):
     def __init__(self, parent):
-        wx.Panel.__init__(self, parent, size=(400, 400))
+        wx.Panel.__init__(self, parent)
 
         # create some sizers
         mainSizer = wx.BoxSizer(wx.VERTICAL)
@@ -13,6 +12,9 @@ class ExamplePanel(wx.Panel):
 
         # A multiline TextCtrl
         self.logger = wx.TextCtrl(self, size=(350, 300), style=wx.TE_MULTILINE | wx.TE_READONLY)
+
+        self.weather_text = wx.StaticText(self, size=(100, 50), label="Here is some weather")
+        hSizer.Add(self.weather_text)
 
         # A button
         bmp = wx.Bitmap("icons/microphone_icon.png", wx.BITMAP_TYPE_ANY)
@@ -34,7 +36,7 @@ class ExamplePanel(wx.Panel):
 
 if __name__ == '__main__':
     app = wx.App(False)
-    frame = wx.Frame(None)
-    panel = ExamplePanel(frame)
+    frame = wx.Frame(None, size=(500, 400))
+    panel = GUIPanel(frame)
     frame.Show()
     app.MainLoop()
