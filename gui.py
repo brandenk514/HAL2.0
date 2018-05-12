@@ -1,51 +1,40 @@
 import wx
+import os
 
 
-class MainFrame(wx.Frame):
-    def __init__(self, parent, title):
-        wx.Frame.__init__(self, parent, -1, title=title)
-
-        # Setting up the menu.
-        filemenu = wx.Menu()
-
-        # wx.ID_ABOUT and wx.ID_EXIT are standard IDs provided by wxWidgets.
-        filemenu.Append(wx.ID_ABOUT, "&About", " Information about this program")
-        filemenu.AppendSeparator()
-        filemenu.Append(wx.ID_EXIT, "&Exit", " Terminate the program")
-
-        # Creating the menubar.
-        menuBar = wx.MenuBar()
-        menuBar.Append(filemenu,"&File") # Adding the "filemenu" to the MenuBar
-        self.SetMenuBar(menuBar)  # Adding the MenuBar to the Frame content.
-        self.Show(True)
-
-
-class MainPanel(wx.Panel):
+class ExamplePanel(wx.Panel):
     def __init__(self, parent):
-        wx.Panel.__init__(self, parent, -1, size=(300, 300))
+        wx.Panel.__init__(self, parent, size=(400, 400))
 
-        self.grid_sizer = wx.GridBagSizer(hgap=3, vgap=3)
+        # create some sizers
+        mainSizer = wx.BoxSizer(wx.VERTICAL)
+        grid = wx.GridBagSizer(hgap=5, vgap=5)
+        hSizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.weather_text = wx.StaticText(self, label="Here is some weather")
-        self.grid_sizer.Add(self.weather_text, pos=(0, 0))
-
-        self.time_text = wx.StaticText(self, label="12:00")
-        self.grid_sizer.Add(self.time_text, pos=(0, 3))
+        # A multiline TextCtrl
+        self.logger = wx.TextCtrl(self, size=(350, 300), style=wx.TE_MULTILINE | wx.TE_READONLY)
 
         # A button
-        self.button = wx.Button(self, label="Ask")
+        bmp = wx.Bitmap("icons/microphone_icon.png", wx.BITMAP_TYPE_ANY)
+        self.button = wx.BitmapButton(self, id=wx.ID_ANY, bitmap=bmp, size=(bmp.GetWidth(), bmp.GetHeight()))
         self.Bind(wx.EVT_BUTTON, self.OnClick, self.button)
-        self.grid_sizer.Add(self.button, pos=(2, 2))
 
-        self.SetSizerAndFit(self.grid_sizer)
+        # add a spacer to the sizer
+        grid.Add((10, 40), pos=(2, 0))
 
-    def OnClick(self):
-        s = 0
+        hSizer.Add(grid, 0, wx.ALL, 5)
+        hSizer.Add(self.logger)
+        mainSizer.Add(hSizer, 0, wx.ALL, 5)
+        mainSizer.Add(self.button, 0, wx.CENTER)
+        self.SetSizerAndFit(mainSizer)
+
+    def OnClick(self, event):
+        self.logger.AppendText(" Click on object with Id %d\n" % event.GetId())
 
 
 if __name__ == '__main__':
     app = wx.App(False)
-    frame = MainFrame(None, "HAL")
-    panel = MainPanel(frame)
+    frame = wx.Frame(None)
+    panel = ExamplePanel(frame)
     frame.Show()
     app.MainLoop()
