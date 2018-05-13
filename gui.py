@@ -1,8 +1,17 @@
 import wx
+import weather
+import location
+import witai
+import api_parsing
 
 
 class GUIPanel(wx.Panel):
     def __init__(self, parent):
+        self.weather = weather.Weather()
+        self.location = location.Location()
+        self.wit = witai.Witai()
+        self.parse = api_parsing.ApiParsing()
+
         wx.Panel.__init__(self, parent)
 
         # create some sizers
@@ -13,7 +22,7 @@ class GUIPanel(wx.Panel):
         # A multiline TextCtrl
         self.logger = wx.TextCtrl(self, size=(350, 300), style=wx.TE_MULTILINE | wx.TE_READONLY)
 
-        self.weather_text = wx.StaticText(self, size=(100, 50), label="Here is some weather")
+        self.weather_text = wx.StaticText(self, size=(100, 50), label=self.loadWeatherData())
         hSizer.Add(self.weather_text)
 
         # A button
@@ -32,6 +41,14 @@ class GUIPanel(wx.Panel):
 
     def OnClick(self, event):
         self.logger.AppendText(" Click on object with Id %d\n" % event.GetId())
+
+    def loadWeatherData(self):
+        json_req = self.location.create_ip_location_request()
+        print(json_req)
+        lat_lng = self.parse.parseLatLngFromIP(json_req)
+        print(lat_lng)
+        self.weather.get_current_weather(lat_lng)
+        return self.weather.get_current_summary()
 
 
 if __name__ == '__main__':

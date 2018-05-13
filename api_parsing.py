@@ -1,3 +1,5 @@
+import location
+
 class ApiParsing:
     def __init__(self):
         self.client = "me"
@@ -15,6 +17,20 @@ class ApiParsing:
             tuple_coordinates = tuple(float(c) for c in coordinates)
             return tuple_coordinates
         except Exception:
+            return "Coordinate parsing failed"
+
+    def parseLatLngFromIP(self, location_request):
+        """
+        :param location_request: A list from a JSON request for a locale
+        :return: a tuple (Latitude, Longitude)
+        """
+        try:
+            coordinates = []
+            coordinates.append(location_request['location']['lat'])  # Latitude
+            coordinates.append(location_request['location']['lng'])  # Longitude
+            tuple_coordinates = tuple(float(c) for c in coordinates)
+            return tuple_coordinates
+        except SystemError:
             return "Coordinate parsing failed"
 
     def parse_location_for_address(self, location_request):
@@ -63,3 +79,10 @@ class ApiParsing:
             return elevation
         except Exception:
             return "I could not find the elevation for the location you requested"
+
+
+if __name__ == '__main__':
+    l = location.Location()
+    p = ApiParsing()
+    i = l.create_ip_location_request()
+    print(p.parseLatLngFromIP(i))
